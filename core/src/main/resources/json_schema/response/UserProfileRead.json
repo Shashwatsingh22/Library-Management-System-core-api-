@@ -2,29 +2,20 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "User profile response",
   "example": {
-    "id": "6c604aef-e700-4fcc-92c4-7f6605941feb",
+    "id": "3f416608-5027-4b8b-8121-4f8bf7471ab0",
     "name": "Shashwat Singh",
-    "profileImgUrl": "http://mera_image.com/shashwat/profile.png",
-    "organization": {
-      "id": "ceb7474c-b357-4a65-95c3-c3d7921eeebe",
-      "name": "Admin Group",
-      "location": "Noida",
-      "country": {
-        "name": "India",
-        "isoCode": "IN"
-      }
-    },
-    "email": "shashwat@test.com",
-    "emailVerifiedOn": 1682794635000,
-    "accountActivatedOn": 1682794635000,
+    "profileImgUrl": "https://fastly.picsum.photos/id/342/2896/1944.jpg?hmac=_2cYDHi2iG1XY53gvXOrhrEWIP5R5OJlP7ySYYCA0QA",
+    "email": "shashwat1@gmail.com",
     "role": {
       "id": 1,
-      "name": "Admin"
+      "name": "Librarian"
     },
     "status": {
-      "id": 4,
-      "name": "Active"
-    }
+      "id": 7,
+      "name": "active"
+    },
+    "designation": "Professor",
+    "college": "Somthing School of University"
   },
   "additionalProperties": false,
   "type": "object",

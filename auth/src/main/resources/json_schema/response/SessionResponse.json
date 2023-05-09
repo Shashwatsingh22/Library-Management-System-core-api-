@@ -1,7 +1,33 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Response for login",
-  "example": {},
+  "example": {
+    "id": "5a7d2960-4f97-49d2-b6ea-d34b1cd29b73",
+    "user": {
+      "id": "3f416608-5027-4b8b-8121-4f8bf7471ab0",
+      "name": "Shashwat Singh",
+      "profileImgUrl": "https://fastly.picsum.photos/id/342/2896/1944.jpg?hmac=_2cYDHi2iG1XY53gvXOrhrEWIP5R5OJlP7ySYYCA0QA",
+      "userName": "shashwat1",
+      "email": "shashwat1@gmail.com",
+      "role": {
+        "id": 1
+      },
+      "status": {
+        "id": 7
+      },
+      "designation": "Professor",
+      "college": "Somthing School of University"
+    },
+    "authToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOlwiNWE3ZDI5NjAtNGY5Ny00OWQyLWI2ZWEtZDM0YjFjZDI5YjczXCJ9Iiwic2Vzc2lvbklkIjoiNWE3ZDI5NjAtNGY5Ny00OWQyLWI2ZWEtZDM0YjFjZDI5YjczIiwiaWF0IjoxNjgzNjYyMzgwLCJleHAiOjE2ODM2NjI2ODB9.Ev9Zm_sOkdj4Uk0D1NsCquNXHYCW_Kge9kTbJ0_DHcQ",
+    "ipAddress": "47.31.174.254",
+    "deviceInfo": {
+      "osVersion": "Mac OS X 13 3",
+      "browser": "Chrome",
+      "browserVersion": "Chrome 113 0",
+      "deviceName": "Mac"
+    },
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+  },
   "type": "object",
   "properties": {
     "id": {
