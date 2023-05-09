@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lms.core.dao.UserDao">
+
+    <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into app.users(
+            id,
+            name,
+            email,
+            user_name,
+            password,
+            profile_img_url,
+            role_type_id,
+            status_id,
+            designation,
+            college,
+            add_date
+        )
+        values(
+            gen_random_uuid(),
+            #{name},
+            #{email},
+            #{userName},
+            #{password},
+            #{profileImgUrl},
+            #{role.id},
+            #{status.id},
+            #{designation},
+            #{college},
+            now()
+        )
+    </insert>
+
+    <select id="get" parameterType="User" resultMap="UserResultMap">
+        select
+            u.id,
+            u.name,
+            u.profile_img_url,
+            u.email,
+        <if test="includePassword == true">
+            u.password,
+        </if>
+            u.designation,
+            u.college,
+
+            status.id as status_id,
+            status.name as status_name,
+
+            role.id as role_id,
+            role.name as role_name
+
+        from app.users u
+
+        inner join app.type status on status.id = u.status_id
+            and status.end_date is null
+            and u.status_id != 6 <!-- User Should Not be Deleted  -->
+        inner join app.type role on role.id = u.role_type_id
+            and role.end_date is null
+
+        where
+            u.end_date is null
+        <if test="user != null and user.id != null">
+            and u.id = #{user.id}::uuid
+        </if>
+        <if test="user != null and user.userName != null">
+            and u.user_name = #{user.userName}
+        </if>
+    </select>
+
+    <resultMap id="IdNameMap" type="IdName">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <resultMap id="CountryMap" type="Country">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="isoCode" column="iso_code"/>
+        <result property="emoji" column="emoji"/>
+    </resultMap>
+
+    <resultMap id="UserResultMap" type="User">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="profileImgUrl" column="profile_img_url"/>
+        <result property="designation" column="designation"/>
+        <result property="college" column="college"/>
+        <association property="status" resultMap="IdNameMap" columnPrefix="status_"/>
+        <association property="role" resultMap="IdNameMap" columnPrefix="role_"/>
+    </resultMap>
+
+
+</mapper>

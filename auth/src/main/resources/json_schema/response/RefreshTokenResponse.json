@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Refresh token response",
+  "type": "object",
+  "additionalProperties": false,
+  "example": {},
+  "properties": {
+    "authToken": {
+      "type": "string"
+    }
+  }
+}

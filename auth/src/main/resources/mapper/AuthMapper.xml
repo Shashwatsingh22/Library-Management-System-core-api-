@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lms.auth.dao.AuthDao">
+
+    <insert id="insert" parameterType="UserSession" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into app.user_sessions(
+            id,
+            user_id,
+            ip_address,
+            os_version,
+            device_name,
+            browser,
+            browser_version,
+            user_agent,
+            add_date
+        )
+        values(
+            gen_random_uuid(),
+            #{user.id}::uuid,
+            #{ipAddress},
+            #{deviceInfo.osVersion},
+            #{deviceInfo.deviceName},
+            #{deviceInfo.browser},
+            #{deviceInfo.browserVersion},
+            #{userAgent},
+            now()
+        )
+    </insert>
+
+    <insert id="logFailedAttempt" parameterType="LoginFailedAttempts">
+        insert into app.login_failed_attempts(user_name, ip_address, user_agent, add_date)
+        values (#{userName}, #{ipAddress}, #{userAgent}, now())
+    </insert>
+
+    <select id="getLoginFailedAttempts" parameterType="loginFailedAttempts" resultType="loginFailedAttempts">
+        select
+            lfa.user_name as "userName",
+            lfa.ip_address as "ipAddress",
+            lfa.user_agent as "userAgent",
+            lfa.add_date as "addDate"
+        from app.login_failed_attempts lfa
+        where
+            lfa.end_date is null
+            and lfa.user_name = #{userName}
+            and EXTRACT(EPOCH FROM (now() - lfa.add_date)) &lt;= extract(epoch from (interval '10 min')) <!-- rows which added under 10 min -->
+    </select>
+
+    <update id="update" parameterType="UserSession">
+        update app.user_sessions
+        set
+        <if test="expiryDate != null">
+            expiry_date = now()
+        </if>
+        <if test="city != null">
+            city = #{city},
+        </if>
+        <if test="country != null and country.isoCode != null">
+            country_iso_code = #{country.isoCode}
+        </if>
+        where
+            end_date is null
+            and expiry_date is null
+        <if test="id != null">
+            and id = #{id}::uuid
+        </if>
+            and user_id = #{user.id}::uuid
+    </update>
+
+    <select id="get" resultMap="UserSessionMap">
+        select
+            u.id as user_id,
+            u.name as user_name,
+            u.profile_img_url as user_profile_img_url,
+            u.email as user_email,
+            u.user_name as user_user_name,
+            u.designation as user_designation,
+            u.college as user_college,
+
+            status.id as user_status_id,
+            status.name as user_status_name,
+
+            role.id as user_role_id,
+            role.name as user_role_name,
+
+            session.id
+        from app.user_sessions session
+        inner join app.users u
+            on u.id = session.user_id
+            and u.end_date is null
+        inner join app.type status on status.id = u.status_id
+            and status.end_date is null
+            and status.id != 6 <!-- User Should Not be deleted-->
+        inner join app.type role on role.id = u.role_type_id
+            and role.end_date is null
+        where
+            session.id = #{session_id}::uuid
+            and session.expiry_date is null
+            and session.add_date >= now() - interval '1 month' <!-- Session Validity upto 1 month -->
+    </select>
+
+    <select id="getActiveSessions" parameterType="FilterActiveSessions" resultMap="ActiveSessions">
+        select
+            ses.id,
+            ses.ip_address,
+            ses.browser as device_browser,
+            ses.browser_version as device_browser_version,
+            ses.os_version as device_os_version,
+            ses.device_name as device_name,
+            ses.add_date,
+            ses.city,
+            c.id as country_id,
+            c.name as country_name,
+            c.iso_code as country_iso_code,
+            c.emoji as country_emoji,
+            count(*) over() as total_count
+        from app.user_sessions as ses
+        left outer join app.country c on
+            c.iso_code = ses.country_iso_code
+            and c.end_date is null
+        where
+            ses.end_date is NULL
+            and ses.expiry_date is null
+            and ses.user_id = #{user.id}::uuid
+            and ses.add_date >= now() - interval '1 month' <!-- Token Validity upto 1 month -->
+        order by add_date
+        <if test="offset != null and limit != null">
+            limit #{limit}
+            offset #{offset}
+        </if>
+    </select>
+
+    <resultMap id="DeviceInfoMap" type="DeviceInfo">
+        <result property="browser" column="browser"/>
+        <result property="browserVersion" column="browser_version"/>
+        <result property="deviceName" column="name"/>
+        <result property="osVersion" column="os_version"/>
+    </resultMap>
+
+    <resultMap id="ActiveSessions" type="Pagination">
+        <result property="count" column="total_count"/>
+        <collection property="data" resultMap="UserSessionMap"/>
+    </resultMap>
+
+    <resultMap id="UserSessionMap" type="UserSession">
+        <id property="id" column="id"/>
+        <result property="city" column="city"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="addDate" column="add_date"/>
+        <association property="country" resultMap="com.lms.core.dao.UserDao.CountryMap" columnPrefix="country_"/>
+        <association property="deviceInfo" resultMap="DeviceInfoMap" columnPrefix="device_"/>
+        <association property="user" resultMap="com.lms.core.dao.UserDao.UserResultMap" columnPrefix="user_"/>
+    </resultMap>
+</mapper>

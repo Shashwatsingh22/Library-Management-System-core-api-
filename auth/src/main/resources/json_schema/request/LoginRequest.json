@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Required Parameters for Login",
+  "type": "object",
+  "additionalProperties": false,
+  "example": {
+    "userName": "shashwat1",
+    "password": "1234567890"
+  },
+  "properties": {
+    "userName": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 50
+    },
+    "password": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 100
+    }
+  },
+  "required": [
+    "userName",
+    "password"
+  ]
+}

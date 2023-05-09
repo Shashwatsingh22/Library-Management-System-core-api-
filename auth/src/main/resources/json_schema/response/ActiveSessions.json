@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Response for active sessions",
+  "example": {
+    "count": 1,
+    "data": [
+      {
+        "id": "990c3940-ec28-11ed-a8dc-b71d6bc28c77",
+        "ipAddress": "47.31.174.254",
+        "deviceInfo": {
+          "osVersion": "Other null null",
+          "browser": "PostmanRuntime",
+          "browserVersion": "PostmanRuntime 7 32",
+          "deviceName": "Other"
+        },
+        "city": "Delhi",
+        "country": {
+          "id": 101,
+          "name": "India",
+          "isoCode": "IN",
+          "emoji": "🇮🇳"
+        },
+        "addDate": 1683389462000
+      }
+    ]
+  },
+  "type": "object",
+  "properties": {
+    "count": {
+      "type": "integer"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "ipAddress": {
+            "type": "string"
+          },
+          "deviceInfo": {
+            "type": "object",
+            "properties": {
+              "osVersion": {
+                "type": "string"
+              },
+              "browser": {
+                "type": "string"
+              },
+              "browserVersion": {
+                "type": "string"
+              },
+              "deviceName": {
+                "type": "string"
+              }
+            }
+          },
+          "city": {
+            "type": "string"
+          },
+          "country": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "isoCode": {
+                "type": "string"
+              },
+              "emoji": {
+                "type": "string"
+              }
+            }
+          },
+          "addDate": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

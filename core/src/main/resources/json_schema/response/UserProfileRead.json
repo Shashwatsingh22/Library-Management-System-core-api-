@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "User profile response",
+  "example": {
+    "id": "6c604aef-e700-4fcc-92c4-7f6605941feb",
+    "name": "Shashwat Singh",
+    "profileImgUrl": "http://mera_image.com/shashwat/profile.png",
+    "organization": {
+      "id": "ceb7474c-b357-4a65-95c3-c3d7921eeebe",
+      "name": "Admin Group",
+      "location": "Noida",
+      "country": {
+        "name": "India",
+        "isoCode": "IN"
+      }
+    },
+    "email": "shashwat@test.com",
+    "emailVerifiedOn": 1682794635000,
+    "accountActivatedOn": 1682794635000,
+    "role": {
+      "id": 1,
+      "name": "Admin"
+    },
+    "status": {
+      "id": 4,
+      "name": "Active"
+    }
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "profileImgUrl": {
+      "type": "string"
+    },
+    "organization": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "country": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "isoCode": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "email": {
+      "type": "string"
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        }
+      }
+    },
+    "emailIdVerifiedOn": {
+      "type": "number"
+    },
+    "accountActivatedOn": {
+      "type": "number"
+    },
+    "role": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

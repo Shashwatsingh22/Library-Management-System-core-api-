@@ -1,0 +1,34 @@
+server:
+  port: 9000 # Overridden
+  error:
+    include-stacktrace: never
+    include-message: always
+  servlet:
+    context-path: /v1
+
+spring:
+  flyway:
+    locations: classpath:db/migrations
+    validateOnMigrate: 'false'
+    baselineOnMigrate: true
+  datasource:
+    username: lms_api
+    jdbc-url: jdbc:postgresql//localhost:${PG_PORT:3306}/lmsdbtest
+    password: Lms@123
+
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*Mapper.xml
+  type-aliases-package: com.lms.commons.models, com.lms.auth.models
+
+logging:
+  level:
+    com.sisa: DEBUG
+    org.flywaydb: DEBUG
+
+environment: test
+app-version: 0.1
+
+build-info:
+  version: 0.1
+  build-number: 0
