@@ -1,4 +1,4 @@
-# ProjectSISA - core_api
+# LMS - core_api
 
 # How do I get set up?
 **Intellij Setup**
@@ -34,7 +34,7 @@ http://localhost:9000/v1/swagger-ui/index.html
 - Import as maven project with JDK 17
 - You will find `CoreApplication` run configuration already present. Run it to start application
 
-Hit the following urls
-http://localhost:9000/v1/ping
-http://localhost:9000/v1/api-docs
-http://localhost:9000/v1/swagger-ui/index.html
+### Hit the following urls
+- http://localhost:9000/v1/ping
+- http://localhost:9000/v1/api-docs
+- http://localhost:9000/v1/swagger-ui/index.html
