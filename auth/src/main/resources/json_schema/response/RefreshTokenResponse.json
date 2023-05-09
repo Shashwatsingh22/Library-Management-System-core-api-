@@ -3,7 +3,9 @@
   "title": "Refresh token response",
   "type": "object",
   "additionalProperties": false,
-  "example": {},
+  "example": {
+    "authToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdjZiLFwibmFtZVwiOlwi......"
+  },
   "properties": {
     "authToken": {
       "type": "string"

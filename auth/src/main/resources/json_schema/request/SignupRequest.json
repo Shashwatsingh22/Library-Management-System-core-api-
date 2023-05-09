@@ -4,6 +4,15 @@
   "type": "object",
   "additionalProperties": false,
   "example": {
+    "name": "Shashwat Singh",
+    "email": "shashwat1@gmail.com",
+    "userName": "shashwat1",
+    "password": "01234567890",
+    "role": {
+      "id": 1
+    },
+    "designation": "Professor",
+    "college": "Somthing School of University"
   },
   "properties": {
     "name": {
