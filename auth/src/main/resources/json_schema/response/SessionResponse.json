@@ -34,55 +34,58 @@
       "type": "string"
     },
     "user": {
-      "name": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            }
+          }
+        },
+        "designation": {
+          "type": "string"
+        },
+        "college": {
+          "type": "string"
+        }
+      },
+      "ipAddress": {
         "type": "string"
       },
-      "email": {
-        "type": "string"
-      },
-      "userName": {
-        "type": "string"
-      },
-      "password": {
-        "type": "string"
-      },
-      "role": {
+      "deviceInfo": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer"
+          "osVersion": {
+            "type": "string"
+          },
+          "browser": {
+            "type": "string"
+          },
+          "browserVersion": {
+            "type": "string"
+          },
+          "deviceName": {
+            "type": "string"
           }
         }
       },
-      "designation": {
-        "type": "string"
-      },
-      "college": {
+      "userAgent": {
         "type": "string"
       }
-    },
-    "ipAddress": {
-      "type": "string"
-    },
-    "deviceInfo": {
-      "type": "object",
-      "properties": {
-        "osVersion": {
-          "type": "string"
-        },
-        "browser": {
-          "type": "string"
-        },
-        "browserVersion": {
-          "type": "string"
-        },
-        "deviceName": {
-          "type": "string"
-        }
-      }
-    },
-    "userAgent": {
-      "type": "string"
     }
   }
 }

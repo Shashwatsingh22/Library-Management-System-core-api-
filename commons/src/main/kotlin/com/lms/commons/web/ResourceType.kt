@@ -1,5 +1,6 @@
 package com.lms.commons.web
 
+import com.lms.commons.annotations.AuthorizedLibrarian
 import com.lms.commons.annotations.SkipAuthentication
 import java.util.function.Predicate
 
@@ -12,6 +13,7 @@ enum class ResourceType(val pathPrefixes: List<String>? = null) {
     SWAGGER(listOf("swagger-ui", "webjars", "api-doc")),
     OPEN,
     USER_AUTHENTICATED,
+    AUTHORIZED_LIBRARIAN,
     ACTUATOR(listOf("actuator"));
 
     companion object {
@@ -37,6 +39,11 @@ enum class ResourceType(val pathPrefixes: List<String>? = null) {
             if (classAnnotationChecker.test(SkipAuthentication::class.java) || methodAnnotationChecker.test(
                     SkipAuthentication::class.java)) {
                 return OPEN
+            }
+
+            if (classAnnotationChecker.test(AuthorizedLibrarian::class.java) || methodAnnotationChecker.test(
+                    AuthorizedLibrarian::class.java)) {
+                return AUTHORIZED_LIBRARIAN
             }
 
             return USER_AUTHENTICATED

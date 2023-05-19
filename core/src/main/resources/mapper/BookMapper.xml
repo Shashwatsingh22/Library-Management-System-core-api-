@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lms.core.dao.BookDao">
+
+    <select id="getGenres" resultType="Genre">
+        select
+            gt.id,
+            gt.title,
+            gt.description,
+            gt.image_url as imageUrl
+        from app.genres_types gt
+        where
+            gt.end_date is null
+            <if test="genreId != null">
+                and gt.id = #{genreId}
+            </if>
+    </select>
+
+    <select id="getBooks" resultMap="BooksMap" parameterType="FilterBooks">
+        select
+            b.id as book_id,
+            b.title as book_title,
+            b.description as book_description,
+            b.author as book_author,
+            b.image_url as book_image_url,
+            b.shelf_location as book_shelf_location,
+
+            gt.id as book_genre_id,
+            gt.title as book_genre_title,
+            gt.description as book_genre_description,
+            gt.image_url as book_genre_image_url,
+
+            status.id as book_status_id,
+            status.name as book_status_name,
+
+            count (*) over() as total_count
+
+        from app.books b
+        inner join app.genres_types gt
+            on gt.id = b.genre_id
+            and gt.end_date is null
+        <if test="genreIds != null and genreIds.size > 0">
+            and get.id in <foreach collection="genreIds" open="(" close=")" separator="," item="genreId">#{genreId}</foreach>
+        </if>
+        inner join app.type status
+            on status.id = b.status_id
+            and status.end_date is null
+        <if test="statusIds != null and statusIds.size > 0">
+            and status.id in <foreach collection="statusIds" open="(" close=")" separator="," item="statusId">#{statusId}</foreach>
+        </if>
+
+        where
+            b.end_date is null
+        <if test="searchText != null">
+            and (
+            b.title ilike '%' || regexp_replace(#{searchText}, '\\+$', '') || '%'
+            or
+            b.author ilike '%' || regexp_replace(#{searchText}, '\\+$', '') || '%'
+            or
+            gt.title ilike '%' || regexp_replace(#{searchText}, '\\+$', '') || '%'
+            )
+        </if>
+            and b.status_id != 5 <!-- Should Not Get Removed -->
+        <if test="bookId != null">
+            and b.id = #{bookId}::uuid
+        </if>
+        order by b.add_date
+        limit #{limit} offset #{offset}
+    </select>
+
+    <resultMap id="GenreMap" type="Genre">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="imageUrl" column="imageUrl"/>
+    </resultMap>
+
+    <resultMap id="BookMap" type="Book">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="author" column="author"/>
+        <result property="shelfLocation" column="shelf_location"/>
+        <result property="imageUrl" column="image_url"/>
+        <association property="genre" columnPrefix="genre_" resultMap="GenreMap"/>
+        <association property="status" columnPrefix="status_" resultMap="com.lms.core.dao.UserDao.IdNameMap"/>
+    </resultMap>
+
+    <resultMap id="BooksMap" type="Pagination">
+        <id property="count" column="total_count"/>
+        <collection property="data" columnPrefix="book_" resultMap="BookMap"/>
+    </resultMap>
+
+</mapper>

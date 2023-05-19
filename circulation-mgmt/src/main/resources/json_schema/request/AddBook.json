@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Add new book",
+  "example": {},
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 2
+    },
+    "description": {
+      "type": "string",
+      "minLength": 15
+    },
+    "author": {
+      "type": "string",
+      "minLength": 5
+    },
+    "shelfLocation": {
+      "type": "string"
+    },
+    "genre": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        }
+      }
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "enum": [
+            3
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "status",
+    "title",
+    "author",
+    "description",
+    "genre",
+    "shelfLocation"
+  ]
+}

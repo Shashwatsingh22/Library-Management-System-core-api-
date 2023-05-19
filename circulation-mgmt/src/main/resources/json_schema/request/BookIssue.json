@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Issue an book",
+  "example": {},
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "book": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "UUID"
+        }
+      }
+    },
+    "member": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    }
+  },
+  "required": [
+    "book",
+    "member"
+  ]
+}

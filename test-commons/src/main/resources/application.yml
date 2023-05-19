@@ -13,17 +13,17 @@ spring:
     baselineOnMigrate: true
   datasource:
     username: lms_api
-    jdbc-url: jdbc:postgresql//localhost:${PG_PORT:3306}/lmsdbtest
+    jdbc-url: jdbc:postgresql://localhost:${PG_PORT:5432}/lmsdbtest
     password: Lms@123
 
 
 mybatis:
   mapper-locations: classpath:mapper/**/*Mapper.xml
-  type-aliases-package: com.lms.commons.models, com.lms.auth.models
+  type-aliases-package: com.lms.commons.models, com.lms.auth.models, com.lms.circulation_mgmt.models, com.lms.core.models
 
 logging:
   level:
-    com.sisa: DEBUG
+    com.lms: DEBUG
     org.flywaydb: DEBUG
 
 environment: test

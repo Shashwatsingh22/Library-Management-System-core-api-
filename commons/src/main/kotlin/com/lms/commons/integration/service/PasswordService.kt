@@ -1,4 +1,4 @@
-package com.lms.auth.integrations.password_management.service
+package com.lms.commons.integration.service
 
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.lms.commons.constants.Constant

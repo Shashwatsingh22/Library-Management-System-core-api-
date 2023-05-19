@@ -3,18 +3,18 @@ package com.lms.commons.config.exception
 import com.fasterxml.jackson.core.JsonParseException
 import com.lms.commons.constants.ApplicationExceptionTypes
 import com.lms.commons.models.ApplicationException
+import com.lms.commons.utils.toJson
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindException
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MissingRequestHeaderException
+import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
-import javax.servlet.http.HttpServletRequest
 
 /**
  * @author Shashwat Singh
@@ -23,11 +23,7 @@ import javax.servlet.http.HttpServletRequest
 @ControllerAdvice
 class ErrorController {
 
-    private val log = LoggerFactory.getLogger(com.lms.commons.config.exception.ErrorController::class.java)
-
-    @Autowired
-    private lateinit var httpServletRequest: HttpServletRequest
-
+    private val log = LoggerFactory.getLogger(ErrorController::class.java)
 
     @ExceptionHandler(ApplicationException::class)
     fun handleCustomErrorExceptions(e: Exception): ResponseEntity<ApplicationException> {
@@ -44,8 +40,8 @@ class ErrorController {
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
     fun handleTypeMismatchException(e: MethodArgumentTypeMismatchException): ResponseEntity<ApplicationException> {
         val fieldName = e.name
-        val requiredType = e.requiredType.simpleName
-
+        val requiredType = e.requiredType?.simpleName
+        log.error("handleTypeMismatchException - Exception thrown - ${e.message}, stackTrace - ${ExceptionUtils.getStackTrace(e)}")
         return ResponseEntity<ApplicationException>(
             ApplicationException(
                 ApplicationExceptionTypes.INVALID_PARAMS.first,
@@ -62,6 +58,7 @@ class ErrorController {
      */
     @ExceptionHandler(MissingRequestHeaderException::class)
     fun handleRequestHeaderException(e: MissingRequestHeaderException): ResponseEntity<ApplicationException> {
+        log.error("handleRequestHeaderException - Exception thrown - ${e.message}, stackTrace - ${ExceptionUtils.getStackTrace(e)}")
         return ResponseEntity<ApplicationException>(
             ApplicationException(
                 ApplicationExceptionTypes.MISSING_HEADER.first,
@@ -78,12 +75,12 @@ class ErrorController {
      */
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ResponseEntity<ApplicationException> {
+        log.error("handleHttpMessageNotReadableException - Exception thrown - ${e.message}, stackTrace - ${ExceptionUtils.getStackTrace(e)}")
         return ResponseEntity<ApplicationException>(
             ApplicationException(
-                ApplicationExceptionTypes.JSON_SCHEMA_VALIDATION_ERROR,
-                details = e.message
+                ApplicationExceptionTypes.GENERIC_EXCEPTION
             ),
-            ApplicationExceptionTypes.JSON_SCHEMA_VALIDATION_ERROR.second
+            ApplicationExceptionTypes.GENERIC_EXCEPTION.second
         )
     }
 
@@ -93,6 +90,7 @@ class ErrorController {
      */
     @ExceptionHandler(BindException::class)
     fun handleBindException(e: BindException): ResponseEntity<ApplicationException> {
+        log.error("handleBindException - Exception thrown - ${e.message}, stackTrace - ${ExceptionUtils.getStackTrace(e)}")
         return ResponseEntity<ApplicationException>(
             ApplicationException(
                 ApplicationExceptionTypes.REQUEST_ERROR
@@ -107,6 +105,7 @@ class ErrorController {
      */
     @ExceptionHandler(JsonParseException::class)
     fun handleJsonParseException(e: JsonParseException): ResponseEntity<ApplicationException> {
+        log.error("handleJsonParseException - Exception thrown - ${e.message}, stackTrace - ${ExceptionUtils.getStackTrace(e)}")
         return ResponseEntity<ApplicationException>(
             ApplicationException(
                 ApplicationExceptionTypes.REQUEST_ERROR
@@ -116,17 +115,36 @@ class ErrorController {
     }
 
     /**
-     * Using incorrect HTTP method
+     * @method handleMethodNotSupportedException
+     * Handled, the exceptions occur when request supports POST but request comes with DELETE
+     * then this exception occurred.
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
     fun handleMethodNotSupportedException(e: HttpRequestMethodNotSupportedException): ResponseEntity<ApplicationException> {
+        log.error("handleMethodNotSupportedException - Exception thrown - ${e.message}, stackTrace - ${ExceptionUtils.getStackTrace(e)}")
         return ResponseEntity<ApplicationException>(
             ApplicationException(
                 ApplicationExceptionTypes.INVALID_HTTP_METHOD_REQUEST.first,
                 ApplicationExceptionTypes.INVALID_HTTP_METHOD_REQUEST.second,
-                ApplicationExceptionTypes.INVALID_HTTP_METHOD_REQUEST.third.format(e.supportedHttpMethods)
-                ),
+                ApplicationExceptionTypes.INVALID_HTTP_METHOD_REQUEST.third.format(e.supportedMethods?.toJson())
+            ),
             ApplicationExceptionTypes.INVALID_HTTP_METHOD_REQUEST.second
+        )
+    }
+
+
+    /**
+     * @method handleRequestParameterException
+     * Handled, the exceptions occur when an requestParam required, but we missed it in request
+     */
+    @ExceptionHandler(MissingServletRequestParameterException::class)
+    fun handleRequestParameterException(e: MissingServletRequestParameterException): ResponseEntity<ApplicationException> {
+        log.error("handleRequestParameterException - Exception thrown - ${e.message}, stackTrace - ${ExceptionUtils.getStackTrace(e)}")
+        return ResponseEntity<ApplicationException>(
+            ApplicationException(
+                ApplicationExceptionTypes.REQUEST_ERROR
+            ),
+            ApplicationExceptionTypes.REQUEST_ERROR.second
         )
     }
 
