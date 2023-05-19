@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Genre Lists",
+  "example": {},
+  "additionalProperties": false,
+  "type": "array",
+  "items": {
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "title": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "imageUrl": {
+        "type": "string"
+      }
+    }
+  }
+}

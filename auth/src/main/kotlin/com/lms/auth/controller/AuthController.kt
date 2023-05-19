@@ -10,6 +10,7 @@ import com.lms.commons.models.Pagination
 import com.lms.commons.models.User
 import com.lms.commons.models.UserSession
 import com.lms.commons.utils.getIpAddress
+import com.lms.core.service.UserService
 import io.swagger.annotations.ApiParam
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -47,6 +48,9 @@ class AuthController {
 
     @Autowired
     private lateinit var authService: AuthService
+
+    @Autowired
+    private lateinit var userService: UserService
 
     @Operation(summary = "Login a user and return user details with token")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -187,7 +191,7 @@ class AuthController {
             request.getIpAddress(),
             request.getHeader(Constant.KEY_USER_AGENT),
         )
-        authControllerService.userSignup(user, userSession)
+        userService.userSignup(user)
         return authControllerService.getUserSession(user, userSession)
     }
 

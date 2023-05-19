@@ -32,7 +32,7 @@ logging:
   pattern:
     level: "%X{values}"
   level:
-    com.siso: ${LOGGING_LEVEL_COM_LMS}
+    com.lms: ${LOGGING_LEVEL_COM_LMS}
 
 datasource:
   username: ${PG_USER}

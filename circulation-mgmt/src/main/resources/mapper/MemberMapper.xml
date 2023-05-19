@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lms.circulation_mgmt.dao.MemberDao">
+
+    <select id="getMembers" parameterType="MemberFilters" resultMap="MemberListMap">
+        select
+            u.id as user_id,
+            u.name as user_name,
+            u.profile_img_url as user_profile_img_url,
+            u.email as user_email,
+            u.user_name as user_user_name,
+            u.designation as user_designation,
+            u.college as user_college,
+            status.id as user_status_id,
+            status.name as user_status_name,
+            role.id as user_role_id,
+            role.name as user_role_name,
+            count (*) over() as total_count,
+            lib.id as user_lib_id,
+            lib.name as user_lib_name,
+            lib.email as user_lib_email,
+            lib.user_name as user_lib_user_name
+        from app.users u
+        inner join app.type status on status.id = u.status_id
+            and status.end_date is null
+        <if test="statusIds != null and statusIds.size > 0">
+            and status.id in <foreach collection="statusIds" open="(" close=")" separator="," item="statusId">
+            #{statusId}
+        </foreach>
+        </if>
+        inner join app.type role on role.id = u.role_type_id
+            and role.end_date is null
+            and role.id = 2 <!-- Member -->
+        left join app.users lib
+            on lib.id = u.deleted_by
+            and lib.end_date is null
+            and lib.status_id = 7
+        where
+            u.end_date is null
+        <if test="collegeName != null">
+            and u.college = #{collegeName}
+        </if>
+        <if test="userId != null">
+            and u.id = #{userId}::uuid
+        </if>
+        <if test="userName != null">
+            and u.user_name = #{userName}
+        </if>
+        <if test="searchText != null">
+            and (
+                u.name ilike '%' || regexp_replace(#{searchText}, '\\+$', '') || '%'
+            or
+                u.email ilike '%' || regexp_replace(#{searchText}, '\\+$', '') || '%'
+            or
+                u.user_name ilike '%' || regexp_replace(#{searchText}, '\\+$', '') || '%'
+            )
+        </if>
+        order by u.add_date
+        limit #{limit} offset #{offset}
+    </select>
+
+    <resultMap id="MemberListMap" type="Pagination">
+        <id property="count" column="total_count"/>
+        <collection property="data" ofType="User" columnPrefix="user_" resultMap="com.lms.core.dao.UserDao.UserResultMap"/>
+    </resultMap>
+
+</mapper>

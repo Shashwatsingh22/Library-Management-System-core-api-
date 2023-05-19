@@ -15,6 +15,7 @@ class User() {
     var status: IdName? = null
     var designation: String? = null
     var college: String? = null
+    var deletedBy: User? = null
 
     constructor(id: String) : this() {
         this.id = id

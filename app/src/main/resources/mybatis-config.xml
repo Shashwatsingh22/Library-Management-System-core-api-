@@ -13,10 +13,14 @@
     <typeAliases>
         <package name="com.lms.commons.models"/>
         <package name="com.lms.auth.models"/>
+        <package name="com.lms.core.models"/>
+        <package name="com.lms.circulation_mgmt.models"/>
     </typeAliases>
     <mappers>
         <mapper resource="mapper/AuthMapper.xml"/>
         <mapper resource="mapper/UserMapper.xml"/>
+        <mapper resource="mapper/MemberMapper.xml"/>
+        <mapper resource="mapper/BookMapper.xml"/>
     </mappers>
 
 </configuration>

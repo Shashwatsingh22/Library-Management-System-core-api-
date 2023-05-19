@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Genre Lists",
+  "example": {},
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "count": {
+      "type": "integer"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "shelfLocation": {
+            "type": "string"
+          },
+          "genre": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "imageUrl": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

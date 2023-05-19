@@ -4,6 +4,7 @@
   "example": {
     "id": "3f416608-5027-4b8b-8121-4f8bf7471ab0",
     "name": "Shashwat Singh",
+    "userName": "shashwat1",
     "profileImgUrl": "https://fastly.picsum.photos/id/342/2896/1944.jpg?hmac=_2cYDHi2iG1XY53gvXOrhrEWIP5R5OJlP7ySYYCA0QA",
     "email": "shashwat1@gmail.com",
     "role": {
@@ -29,30 +30,8 @@
     "profileImgUrl": {
       "type": "string"
     },
-    "organization": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "location": {
-          "type": "string"
-        },
-        "country": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "isoCode": {
-              "type": "string"
-            }
-          }
-        }
-      }
+    "userName": {
+      "type": "string"
     },
     "email": {
       "type": "string"
@@ -65,12 +44,6 @@
         }
       }
     },
-    "emailIdVerifiedOn": {
-      "type": "number"
-    },
-    "accountActivatedOn": {
-      "type": "number"
-    },
     "role": {
       "type": "object",
       "properties": {
@@ -81,6 +54,12 @@
           "type": "string"
         }
       }
+    },
+    "designation": {
+      "type": "string"
+    },
+    "college": {
+      "type": "string"
     }
   }
 }

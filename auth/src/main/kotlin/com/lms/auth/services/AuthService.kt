@@ -3,7 +3,7 @@ package com.lms.auth.services
 import com.lms.auth.dao.AuthDao
 import com.lms.auth.integrations.ip_info.models.IpInfoResponse
 import com.lms.auth.integrations.ip_info.service.IpInfoService
-import com.lms.auth.integrations.password_management.service.PasswordService
+import com.lms.commons.integration.service.PasswordService
 import com.lms.auth.models.FilterActiveSessions
 import com.lms.auth.models.LoginFailedAttempts
 import com.lms.commons.constants.Constant

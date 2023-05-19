@@ -13,7 +13,7 @@ object ApplicationExceptionTypes {
     val GENERIC_EXCEPTION = Triple(7, HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong. Please try again later.")
     val TOO_MANY_LOGIN_ATTEMPTS = Triple(8, HttpStatus.TOO_MANY_REQUESTS, "Too many failed requests. Please try again after 10 minutes")
 
-    val INVALID_HTTP_METHOD_REQUEST = Triple(9, HttpStatus.METHOD_NOT_ALLOWED, "Please request with correct method %s.")
+    val INVALID_HTTP_METHOD_REQUEST = Triple(9, HttpStatus.METHOD_NOT_ALLOWED, "Please request with correct method. Supported Methods are `%s`.")
 
     val UNAUTHORIZED = Triple(10, HttpStatus.UNAUTHORIZED, "Unauthorized")
 
@@ -23,4 +23,11 @@ object ApplicationExceptionTypes {
 
     val INVALID_JWT_TOKEN = Triple(14, HttpStatus.UNAUTHORIZED,"Invalid token received, please check once." )
     val JWT_TOKEN_EXPIRED = Triple(15, HttpStatus.UNAUTHORIZED, "Given Token Expired, please again try to do login.")
+
+    val MEMBER_NOT_FOUND =  Triple(16, HttpStatus.NOT_FOUND, "Member not found, please give correct member details")
+    val INVALID_GENRE = Triple(17, HttpStatus.UNPROCESSABLE_ENTITY, "Please give correct genre details.")
+    val INVALID_BOOK_DETAIL = Triple(18, HttpStatus.UNPROCESSABLE_ENTITY, "Please give correct book details.")
+    val INVALID_MEMBER_DETAIL = Triple(19, HttpStatus.UNPROCESSABLE_ENTITY, "Please give correct member detail.")
+    val BOOK_ALREADY_BORROWED = Triple(20, HttpStatus.UNPROCESSABLE_ENTITY, "Book Already borrowed by someone.")
+
 }

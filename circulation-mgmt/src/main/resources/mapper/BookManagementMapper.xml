@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lms.circulation_mgmt.dao.BookManagementDao">
+
+    <insert id="insert" parameterType="Book" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into app.books(
+            id,
+            title,
+            description,
+            author,
+            image_url,
+            shelf_location,
+            genre_id,
+            status_id,
+            add_date,
+        )
+        values(
+            gen_random_uuid(),
+            #{title},
+            #{description},
+            #{author},
+            #{shelfLocation},
+            #{genre.id},
+            #{status.id},
+            now()
+        )
+    </insert>
+
+    <update id="update" parameterType="Book">
+        update app.books
+        set
+        <if test="title != null">
+            title = #{title},
+        </if>
+        <if test="description != null">
+            description = #{description},
+        </if>
+        <if test="author != null">
+            author = #{author},
+        </if>
+        <if test="shelfLocation != null">
+            shelf_location = #{shelfLocation},
+        </if>
+        <if test="genre != null and genre.id != null">
+            genre_id = #{genre.id},
+        </if>
+        <if test="status != null and status.id != null">
+            status_id = #{status.id}
+        </if>
+            update_date = now()
+        where
+            end_date is null
+    </update>
+
+    <insert id="issueBook" parameterType="BookCheckout">
+        insert into app.book_checkouts(
+            book_id,
+            member_id,
+            librarian_id,
+            issue_date,
+        ) values (
+            #{book.id}::uuid,
+            #{member.id}::uuid,
+            #{librarian.id}::uuid,
+            now()
+        )
+    </insert>
+
+    <update id="updateBookCheckout" parameterType="BookCheckout">
+        update app.book_checkouts
+        set
+            <if test="returnDate != null">
+                return_date = now(),
+            </if>
+            update_date = now()
+        where
+            end_date is null
+            and member_id = #{member.id}::uuid
+            and book_id = #{book.id}::uuid
+    </update>
+
+</mapper>

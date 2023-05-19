@@ -38,6 +38,7 @@
             u.name,
             u.profile_img_url,
             u.email,
+            u.user_name,
         <if test="includePassword == true">
             u.password,
         </if>
@@ -68,6 +69,61 @@
         </if>
     </select>
 
+    <update id="update" parameterType="User">
+        update app.users
+        set
+        <if test="deletedBy != null and deletedBy.id != null">
+            deleted_by = #{deletedBy.id}::uuid,
+            status_id = #{status.id},
+        </if>
+        <if test="name != null">
+            name = #{name},
+        </if>
+        <if test="password != null">
+            password = #{password},
+        </if>
+        <if test="designation != null">
+            designation = #{designation},
+        </if>
+        <if test="profileImgUrl != null">
+            profile_img_url = #{profileImgUrl},
+        </if>
+        <if test="college != null">
+            college = #{college},
+        </if>
+        update_date = now()
+        where
+            id = #{id}::uuid
+            and status_id != 6 <!-- User Should Not be Deleted  -->
+            and end_date is null
+    </update>
+
+<!--    <select id="getBookCheckouts" parameterType="User" resultType="BookCheckout">-->
+<!--        select-->
+<!--            bc.id as book_checkout_id,-->
+<!--            -->
+<!--            book.id as book_checkout_book_id,-->
+<!--            book.title as book_checkout_book_title,-->
+<!--            book.description as book_checkout_book_description,-->
+<!--            book.author as book_checkout_book_author,-->
+<!--            book.shelf_location as book_checkout_shelf_location,-->
+<!--            -->
+<!--            member.id as book_checkout_member_id,-->
+<!--            member.name as book_checkout_member_name,-->
+<!--            member.-->
+<!--            -->
+<!--        from app.book_checkouts bc-->
+<!--        inner join app.books b-->
+<!--            on b.id = bc.book_id-->
+<!--            and b.end_date is null-->
+<!--        inner join app.users member-->
+<!--            on member.id = bc.member_id-->
+<!--            and member.end_date is null-->
+<!--        inner join app.users librarian-->
+<!--            on librarian.id = bc.librarian_id-->
+<!--        -->
+<!--    </select>-->
+
     <resultMap id="IdNameMap" type="IdName">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
@@ -83,6 +139,7 @@
     <resultMap id="UserResultMap" type="User">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
+        <result property="userName" column="user_name"/>
         <result property="email" column="email"/>
         <result property="password" column="password"/>
         <result property="profileImgUrl" column="profile_img_url"/>
@@ -90,6 +147,7 @@
         <result property="college" column="college"/>
         <association property="status" resultMap="IdNameMap" columnPrefix="status_"/>
         <association property="role" resultMap="IdNameMap" columnPrefix="role_"/>
+        <association property="deletedBy" resultMap="UserResultMap" columnPrefix="lib_"/>
     </resultMap>
 
 

@@ -3,9 +3,11 @@ package com.lms.app.config.web
 import com.lms.auth.services.AuthService
 import com.lms.commons.constants.ApplicationExceptionTypes
 import com.lms.commons.constants.Constant
+import com.lms.commons.enums.UserRole
 import com.lms.commons.models.ApplicationException
 import com.lms.commons.utils.JwtTokenUtil
 import com.lms.commons.utils.LogPrefixes
+import com.lms.commons.utils.getAuthUser
 import com.lms.commons.web.ResourceType
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
@@ -64,6 +66,11 @@ class InterceptorConfig : HandlerInterceptor {
             ResourceType.USER_AUTHENTICATED -> {
                 sessionId = validateAccessToken(request)
             }
+
+            ResourceType.AUTHORIZED_LIBRARIAN -> {
+                sessionId = validateAccessToken(request)
+                isUserAllowed(request)
+            }
         }
         sessionId?.let {
             MDC.put("values", LogPrefixes.SESSION_ID.format(it))
@@ -75,6 +82,14 @@ class InterceptorConfig : HandlerInterceptor {
             commonWebConfigServices.validateIncomingRequestBody(request, handler)
         }
         return true
+    }
+
+    private fun isUserAllowed(request: HttpServletRequest) {
+        val user = request.getAuthUser()
+        if(user!!.role!!.id != UserRole.LIBRARIAN.id) {
+            log.info("isUserAllowed - LoggedInUser <${user.id}> not allowed to access these endpoint.")
+           throw ApplicationException(ApplicationExceptionTypes.UNAUTHORIZED)
+        }
     }
 
     private fun validateAccessToken(request: HttpServletRequest): String {

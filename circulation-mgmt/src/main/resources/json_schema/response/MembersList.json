@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Filtered Members List",
+  "example": {},
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "count": {
+      "type": "integer"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "profileImgUrl": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              }
+            }
+          },
+          "role": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "designation": {
+            "type": "string"
+          },
+          "college": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
