@@ -26,4 +26,8 @@ open class BookManagementService {
     open fun issueBook(bookCheckout: BookCheckout): Int {
         return bookManagementDao.issueBook(bookCheckout)
     }
+
+    open fun returnBook(bookCheckout: BookCheckout): Int {
+        return bookManagementDao.updateBookCheckout(bookCheckout)
+    }
 }

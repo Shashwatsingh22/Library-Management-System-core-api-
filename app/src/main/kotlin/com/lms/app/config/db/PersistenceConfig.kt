@@ -18,7 +18,7 @@ import javax.sql.DataSource
 
 @Configuration
 @MapperScan(
-    basePackages = ["com.lms.auth.dao", "com.lms.core.dao", "com.lms.circulation_mgmt.dao"],
+    basePackages = ["com.lms.auth.dao", "com.lms.core.dao", "com.lms.circulation_mgmt.dao","com.lms.commons.dao"],
     annotationClass = Mapper::class
 )
 open class PersistenceConfig {

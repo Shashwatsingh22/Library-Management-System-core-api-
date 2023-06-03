@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -88,7 +89,7 @@ class BookManagementController {
             ApiResponse(
                 responseCode = "422",
                 description = "ErrorCode: 17, Please give correct genre details." +
-                              "ErrorCode: 18, Please give correct book details.",
+                        "ErrorCode: 18, Please give correct book details.",
                 content = [Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = Schema(implementation = ApplicationException::class)
@@ -102,8 +103,8 @@ class BookManagementController {
                 )]
             )]
     )
-    @PutMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateBook(@RequestParam("bookId") bookId: UUID, @RequestBody book: Book, loggedInUser: User): Book {
+    @PutMapping(value = ["/{bookId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun updateBook(@PathVariable("bookId") bookId: UUID, @RequestBody book: Book, loggedInUser: User): Book? {
         return bookManagementControllerService.updateBook(bookId, book, loggedInUser)
     }
 
@@ -121,24 +122,47 @@ class BookManagementController {
             ApiResponse(
                 responseCode = "422",
                 description = "ErrorCode: 18, Please give correct book details." +
-                              "ErrorCode: 20, Book Already borrowed by someone" +
-                        "ErrorCode: 20, Book Already borrowed by someone",
+                        "ErrorCode: 20, Book Already borrowed by someone." +
+                        "ErrorCode: 19, Please give correct member detail.",
                 content = [Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = Schema(implementation = ApplicationException::class)
                 )]
             ),
             ApiResponse(
-                responseCode = "200", description = "Successfully added new book.",
+                responseCode = "200", description = "Successfully borrowed book.",
                 content = [Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = Schema(implementation = BookCheckout::class)
                 )]
             )]
     )
-    @PostMapping(value = ["/issue"],produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(value = ["/issue"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun issueBook(@RequestBody bookCheckout: BookCheckout, loggedInUser: User): BookCheckout {
         return bookManagementControllerService.issueBook(bookCheckout, loggedInUser)
+    }
+
+    @Operation(summary = "return an book")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "422",
+                description = "ErrorCode: 18, Please give correct book details." +
+                        "ErrorCode: 20, Book Already in available state." +
+                        "ErrorCode: 19, Please give correct member detail.",
+                content = [Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = Schema(implementation = ApplicationException::class)
+                )]
+            ),
+            ApiResponse(
+                responseCode = "200",
+                description = "Successfully return book.",
+            )]
+    )
+    @PutMapping(value = ["/return/{bookId}/{memberId}"])
+    fun returnBook(@PathVariable bookId: UUID, @PathVariable memberId: UUID, loggedInUser: User) {
+        return bookManagementControllerService.returnBook(bookId.toString(), memberId.toString(), loggedInUser)
     }
 
 }

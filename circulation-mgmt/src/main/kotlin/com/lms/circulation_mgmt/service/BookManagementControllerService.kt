@@ -8,10 +8,12 @@ import com.lms.commons.models.BookCheckout
 import com.lms.commons.models.Genre
 import com.lms.commons.models.IdName
 import com.lms.commons.models.User
+import com.lms.commons.utils.toJson
 import com.lms.core.service.BookService
 import com.lms.core.service.UserService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -43,13 +45,15 @@ open class BookManagementControllerService {
 
     open fun addNewBook(book: Book, loggedInUser: User): Book {
         book.genre = validateGenre(book.genre!!.id!!, loggedInUser)
-        val insertedRow = bookManagementService.addBook(book)
-        if(insertedRow != 1) {
-            log.info("addNewBook - Librarian <${loggedInUser.id}> failed to add new book <${book.title}>")
-            throw ApplicationException(ApplicationExceptionTypes.GENERIC_EXCEPTION)
+
+       return try {
+           bookManagementService.addBook(book)
+           log.info("addNewBook - Librarian <${loggedInUser.id}> successfully added new book <${book.id}>")
+           book
+        } catch (e: DuplicateKeyException) {
+           log.info("addNewBook - Librarian <${loggedInUser.id}> failed to add new book <${book.title}>")
+           throw ApplicationException(ApplicationExceptionTypes.BOOK_ALREADY_EXIST)
         }
-        log.info("addNewBook - Librarian <${loggedInUser.id}> successfully added new book <${book.id}>")
-        return book
     }
 
     open fun checkIfBookExist(bookId: String, loggedInUser: User): Book {
@@ -61,19 +65,29 @@ open class BookManagementControllerService {
         return book
     }
 
-    open fun updateBook(bookId: UUID, book: Book, loggedInUser: User): Book {
+    open fun updateBook(bookId: UUID, book: Book, loggedInUser: User): Book? {
         checkIfBookExist(bookId.toString(), loggedInUser)
         if(book.genre?.id != null) {
             book.genre = validateGenre(book.genre!!.id!!, loggedInUser)
         }
         book.id = bookId.toString()
-        val updatedRow = bookManagementService.updateBook(book)
-        if(updatedRow != 1) {
-            log.info("addNewBook - Librarian <${loggedInUser.id}> failed to update book <${book.id}>")
-            throw ApplicationException(ApplicationExceptionTypes.GENERIC_EXCEPTION)
+        return try {
+            bookManagementService.updateBook(book)
+            log.info("updateBook - Librarian <${loggedInUser.id}> successfully updated the given book <${bookId}> details.")
+            book
+        } catch (e: DuplicateKeyException) {
+            log.info("updateBook - Librarian <${loggedInUser.id}> given book details are already exits.")
+            throw ApplicationException(ApplicationExceptionTypes.BOOK_ALREADY_EXIST)
         }
-        log.info("addNewBook - Librarian <${loggedInUser.id}> successfully updated book <${book.id}>")
-        return book
+    }
+
+    private fun checkIfMemberExist(member: User, loggedInUser: User): User {
+        val memberDetail = userService.get(member)
+        if(memberDetail == null) {
+            log.info("issueBook - Librarian <${loggedInUser.id}> given invalid member <${member.id}> detail.")
+            throw ApplicationException(ApplicationExceptionTypes.INVALID_MEMBER_DETAIL)
+        }
+        return member
     }
 
     open fun issueBook(bookCheckout: BookCheckout, loggedInUser: User): BookCheckout {
@@ -82,22 +96,38 @@ open class BookManagementControllerService {
             log.info("issueBook - Librarian <${loggedInUser.id}> trying to issue an book <${book.id}> which is already borrowed <${book.status!!.id}>")
             throw ApplicationException(ApplicationExceptionTypes.BOOK_ALREADY_BORROWED)
         }
-        val member = userService.get(User(bookCheckout.member!!.id!!))
-        if(member == null) {
-            log.info("issueBook - Librarian <${loggedInUser.id}> given invalid member <${bookCheckout.member!!.id}> detail.")
-            throw ApplicationException(ApplicationExceptionTypes.INVALID_MEMBER_DETAIL)
-        }
         bookCheckout.book = book
-        bookCheckout.member = member
+        bookCheckout.member = checkIfMemberExist(bookCheckout.member!!, loggedInUser)
         bookCheckout.librarian = loggedInUser
         val insertedRow = bookManagementService.issueBook(bookCheckout)
         if(insertedRow != 1) {
-            log.info("issueBook - Librarian <${loggedInUser.id}> failed to issue an book <${bookCheckout.book!!.id}> for member <${member.id}>")
+            log.info("issueBook - Librarian <${loggedInUser.id}> failed to issue an book <${bookCheckout.book!!.id}> for member <${bookCheckout.member!!.id}>")
             throw ApplicationException(ApplicationExceptionTypes.GENERIC_EXCEPTION)
         }
         //Update Status for Book
-        bookManagementService.updateBook(Book(book.id!!, IdName(BookStatus.BORROWED.id)))
+       bookManagementService.updateBook(Book(book.id!!, IdName(BookStatus.BORROWED.id)))
+        log.info("issueBook - Librarian <${loggedInUser.id}> successfully issue an book <${bookCheckout.book!!.id}> for member <${bookCheckout.member!!.id}>")
         return bookCheckout
+    }
+
+    open fun returnBook(bookId: String, memberId: String, loggedInUser: User) {
+        val book = checkIfBookExist(bookId, loggedInUser)
+        if(book.status!!.id == BookStatus.AVAILABLE.id) {
+            log.info("returnBook - Librarian <${loggedInUser.id}> trying to return book <${book.id}> which is in Available State.")
+            throw ApplicationException(ApplicationExceptionTypes.BOOK_IN_AVAILABLE_STATE)
+        }
+        val bookCheckout = BookCheckout()
+        bookCheckout.book = book
+        bookCheckout.member = checkIfMemberExist(User(memberId), loggedInUser)
+        bookCheckout.librarian = loggedInUser
+        val updatedRow = bookManagementService.returnBook(bookCheckout)
+        if(updatedRow != 1) {
+            log.info("returnBook - Librarian <${loggedInUser.id}> failed to return an book <${bookCheckout.book!!.id}> for member <${memberId}>")
+            throw ApplicationException(ApplicationExceptionTypes.GENERIC_EXCEPTION)
+        }
+        //Update Status for Book to Available
+        bookManagementService.updateBook(Book(bookId, IdName(BookStatus.AVAILABLE.id)))
+        log.info("returnBook - Librarian <${loggedInUser.id}> successfully return book <${bookId}> for member <${memberId}>")
     }
 
 }

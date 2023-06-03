@@ -30,4 +30,6 @@ object ApplicationExceptionTypes {
     val INVALID_MEMBER_DETAIL = Triple(19, HttpStatus.UNPROCESSABLE_ENTITY, "Please give correct member detail.")
     val BOOK_ALREADY_BORROWED = Triple(20, HttpStatus.UNPROCESSABLE_ENTITY, "Book Already borrowed by someone.")
 
+    val BOOK_ALREADY_EXIST = Triple(21, HttpStatus.UNPROCESSABLE_ENTITY, "Given book details already present.")
+    val BOOK_IN_AVAILABLE_STATE = Triple(22, HttpStatus.UNPROCESSABLE_ENTITY, "Given book details already in available state.")
 }

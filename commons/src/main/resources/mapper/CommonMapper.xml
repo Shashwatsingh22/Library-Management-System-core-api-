@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lms.commons.dao.CommonDao">
+
+    <select id="getTypes" resultType="IdName">
+        SELECT
+            id,
+            name
+        FROM
+            app.type
+        WHERE
+        <if test="typeId != null">
+            id = #{typeId} and
+        </if>
+            group_id = #{groupId} and
+            end_date is null
+    </select>
+
+
+    
+</mapper>

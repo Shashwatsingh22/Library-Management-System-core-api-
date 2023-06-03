@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS app.books
     primary key(id)
 );
 
--- Add Indexs on title of genres
+-- Add Index's on title of genres
 CREATE INDEX books_title_idx ON app.books USING HASH(title) where end_date is null;
 
 -- Create Table for Book checkouts management
@@ -156,5 +156,5 @@ create table if not exists app.book_checkouts (
     primary key(id)
 );
 
--- Add Indexs on book_id
+-- Add Index's on book_id
 CREATE INDEX book_checkouts_book_id_idx ON app.book_checkouts USING HASH(book_id) where end_date is null;

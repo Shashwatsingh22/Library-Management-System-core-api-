@@ -21,6 +21,8 @@
         <mapper resource="mapper/UserMapper.xml"/>
         <mapper resource="mapper/MemberMapper.xml"/>
         <mapper resource="mapper/BookMapper.xml"/>
+        <mapper resource="mapper/BookManagementMapper.xml"/>
+        <mapper resource="mapper/CommonMapper.xml"/>
     </mappers>
 
 </configuration>

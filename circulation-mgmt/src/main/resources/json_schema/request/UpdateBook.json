@@ -20,6 +20,9 @@
     "shelfLocation": {
       "type": "string"
     },
+    "imageUrl": {
+      "type": "string"
+    },
     "genre": {
       "type": "object",
       "properties": {

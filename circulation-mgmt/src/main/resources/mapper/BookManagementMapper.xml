@@ -13,13 +13,14 @@
             shelf_location,
             genre_id,
             status_id,
-            add_date,
+            add_date
         )
         values(
             gen_random_uuid(),
             #{title},
             #{description},
             #{author},
+            #{imageUrl},
             #{shelfLocation},
             #{genre.id},
             #{status.id},
@@ -42,11 +43,14 @@
         <if test="shelfLocation != null">
             shelf_location = #{shelfLocation},
         </if>
+        <if test="imageUrl != null">
+            image_url = #{imageUrl},
+        </if>
         <if test="genre != null and genre.id != null">
             genre_id = #{genre.id},
         </if>
         <if test="status != null and status.id != null">
-            status_id = #{status.id}
+            status_id = #{status.id},
         </if>
             update_date = now()
         where
@@ -79,5 +83,9 @@
             and member_id = #{member.id}::uuid
             and book_id = #{book.id}::uuid
     </update>
+
+<!--    <select id="getBookCheckout" parameterType="BookCheckoutFilter">-->
+<!--        -->
+<!--    </select>-->
 
 </mapper>

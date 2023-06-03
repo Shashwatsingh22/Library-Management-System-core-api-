@@ -53,7 +53,7 @@ class BookController {
         ]
     )
     @GetMapping(value = ["/genre"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getClient(@RequestParam("genreId") genreId: Int?): List<Genre>? {
+    fun getGenre(@RequestParam("genreId") genreId: Int?): List<Genre>? {
         return bookService.getGenres(genreId)
     }
 
@@ -102,7 +102,7 @@ class BookController {
         ]
     )
     @GetMapping(value = ["/list"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getClients(filter: FilterBooks): Pagination<Book>? {
+    fun getBooks(filter: FilterBooks): Pagination<Book>? {
         return bookService.getBooks(filter)
     }
 
@@ -125,7 +125,7 @@ class BookController {
         ]
     )
     @GetMapping(value = ["/{bookId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getClient(@PathVariable("bookId") bookId: UUID): Book? {
+    fun getBookDetails(@PathVariable("bookId") bookId: UUID): Book? {
         return bookService.getBook(bookId.toString())
     }
 }
